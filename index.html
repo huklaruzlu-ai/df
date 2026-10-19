@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YKS Sayısal Komuta Merkezi | Ücretsiz Çalışma & Kaynak Takip</title>
+    <title>Kerem Komuta Merkezi | YKS Sayısal Program</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,7 +50,7 @@
             -webkit-mask-image: radial-gradient(circle at top right, black 30%, transparent 80%);
         }
 
-        /* Sol Üst Atatürk Görseli */
+        /* Atatürk Siluet Görseli */
         .ataturk-blend {
             position: fixed;
             top: 0;
@@ -95,13 +95,13 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <!-- Sanatsal Filigranlar -->
+    <!-- Filigranlar -->
     <div class="flag-blend"></div>
     <div class="ataturk-blend"></div>
     <div class="math-corner-left">∫ ∑ π √x ∞ f(x)</div>
     <div class="math-corner-right">Δx λ  E=mc²  sinθ</div>
 
-    <!-- Atatürk Banner & Türk Bayrağı Rozeti -->
+    <!-- Atatürk Banner -->
     <div class="bg-gradient-to-r from-slate-950 via-slate-900/90 to-slate-950 border-b border-slate-800/80 py-2.5 px-4 text-center backdrop-blur-md sticky top-0 z-50 flex items-center justify-between">
         <div class="flex items-center gap-2 z-10">
             <span class="text-red-500 font-bold text-sm"><i class="fa-solid fa-star-and-crescent"></i></span>
@@ -119,11 +119,11 @@
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
             <div class="flex items-center space-x-3.5">
                 <div class="bg-gradient-to-tr from-blue-600 to-cyan-500 p-2.5 rounded-2xl text-white font-bold text-xl shadow-lg shadow-blue-500/20">
-                    <i class="fa-solid fa-graduation-cap"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-lg leading-tight text-white tracking-wide">YKS Sayısal Komuta Merkezi</h1>
-                    <p class="text-xs text-blue-400 font-medium">Açık Kaynak Ücretsiz Çalışma & Kaynak Takip Platformu</p>
+                    <h1 class="font-extrabold text-lg leading-tight text-white tracking-wide">Kerem Komuta Merkezi</h1>
+                    <p class="text-xs text-blue-400 font-medium">YKS Sayısal Kişisel Takip & Analiz</p>
                 </div>
             </div>
             <button onclick="exportData()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition">
@@ -157,14 +157,14 @@
             <!-- HAFTALIK PROGRAM SEKMESİ -->
             <div id="tab-program" class="space-y-6 flex-1 flex flex-col">
                 
-                <!-- Üst Gezinti & Hafta Seçici Kontrol Paneli -->
+                <!-- Kontrol Paneli -->
                 <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
                     <div>
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-calendar-week text-blue-400"></i>
                             <h2 class="text-lg font-bold text-white" id="current-week-label">Hafta</h2>
                         </div>
-                        <p class="text-xs text-slate-400 mt-0.5">Yön tuşları ile geçmiş haftalara hızlı geçiş yapabilirsiniz.</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Yön tuşları ile geçmiş haftalara hızlı geçiş yapabilirsin.</p>
                     </div>
 
                     <div class="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-1">
@@ -178,7 +178,7 @@
                     </div>
                 </div>
 
-                <!-- Genel Haftalık Başarı & Yüzde Barı -->
+                <!-- Başarı Barı -->
                 <div class="bg-slate-900/90 border border-slate-800 p-4.5 rounded-2xl flex items-center justify-between gap-4 shadow-lg">
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-2">
@@ -214,7 +214,7 @@
 
             <!-- MÜFREDAT SEKMESİ -->
             <div id="tab-mufredat" class="hidden space-y-4">
-                <h2 class="text-xl font-bold border-b border-slate-800 pb-3"><i class="fa-solid fa-list-check text-blue-400 mr-2"></i> YKS Sayısal Müfredat Takibi</h2>
+                <h2 class="text-xl font-bold border-b border-slate-800 pb-3"><i class="fa-solid fa-list-check text-blue-400 mr-2"></i> YKS Sayısal & Sosyal Müfredat Takibi</h2>
                 <div id="mufredat-container" class="space-y-4"></div>
             </div>
 
@@ -223,7 +223,7 @@
                 <h2 class="text-xl font-bold border-b border-slate-800 pb-3"><i class="fa-solid fa-chart-line text-blue-400 mr-2"></i> Deneme Analizi</h2>
                 <div class="bg-slate-900/90 p-4.5 rounded-2xl border border-slate-800 space-y-3">
                     <h3 class="font-bold text-sm text-blue-400"><i class="fa-solid fa-paste mr-2"></i> Okulizyon'dan Hızlı İçe Aktar</h3>
-                    <textarea id="okulizyon-input" rows="3" placeholder="Okulizyon sonuç ekranındaki metni yapıştırın..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500"></textarea>
+                    <textarea id="okulizyon-input" rows="3" placeholder="Okulizyon sonuç ekranındaki metni yapıştır..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500"></textarea>
                     <button onclick="parseOkulizyonText()" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-xl text-sm transition">Verileri Çözümle</button>
                 </div>
                 <div class="bg-slate-900/90 p-4.5 rounded-2xl border border-slate-800">
@@ -234,7 +234,7 @@
         </main>
     </div>
 
-    <!-- MODAL: GÜNE ÖZEL TIKLAMALI DERS EKLEME -->
+    <!-- MODAL: DERS EKLEME -->
     <div id="add-task-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-md space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -299,6 +299,10 @@
                     <option value="TYT/AYT Fizik">⚛️ TYT/AYT Fizik</option>
                     <option value="TYT/AYT Kimya">🧪 TYT/AYT Kimya</option>
                     <option value="TYT/AYT Biyoloji">🧬 TYT/AYT Biyoloji</option>
+                    <option value="Tarih">📜 Tarih</option>
+                    <option value="Coğrafya">🌍 Coğrafya</option>
+                    <option value="Felsefe">🧠 Felsefe</option>
+                    <option value="Din Kültürü">🕌 Din Kültürü</option>
                 </select>
             </div>
             <div>
@@ -320,7 +324,11 @@
                 "Fizik": ["Fizik Bilimine Giriş", "Madde ve Özellikleri", "Hareket ve Kuvvet", "İş, Güç ve Enerji", "Isı ve Sıcaklık", "Elektrostatik", "Optik", "Dalgalar"],
                 "Kimya": ["Kimya Bilimi", "Atom ve Periyodik Sistem", "Kimyasal Türler Arası Etkileşimler", "Mol Kavramı", "Kimyasal Hesaplamalar", "Asitler, Bazlar, Tuzlar", "Maddenin Halleri"],
                 "Biyoloji": ["Yaşam Bilimi Biyoloji", "Hücre ve Organeller", "Canlıların Sınıflandırılması", "Hücre Bölünmeleri", "Kalıtım", "Ekosistem Ekolojisi"],
-                "Geometri": ["Doğruda ve Üçgende Açılar", "Özel Üçgenler", "Üçgende Alan ve Benzerlik", "Çokgenler ve Dörtgenler", "Çember ve Daire", "Analitik Geometri", "Katı Cisimler"]
+                "Geometri": ["Doğruda ve Üçgende Açılar", "Özel Üçgenler", "Üçgende Alan ve Benzerlik", "Çokgenler ve Dörtgenler", "Çember ve Daire", "Analitik Geometri", "Katı Cisimler"],
+                "Tarih": ["Tarih Bilimine Giriş", "İlk Türk Devletleri", "İslam Medeniyeti", "Osmanlı Tarihi", "Milli Mücadele & İnkılap Tarihi"],
+                "Coğrafya": ["Doğa ve İnsan", "Dünya'nın Şekli ve Hareketleri", "Harita Bilgisi", "İklim Bilgisi", "Türkiye'nin Yüzey Şekilleri", "Nüfus ve Afetler"],
+                "Felsefe": ["Felsefeyi Tanıma", "Bilgi Felsefesi", "Varlık Felsefesi", "Ahlak Felsefesi", "Sanat ve Din Felsefesi"],
+                "Din Kültürü": ["İnanç ve İbadet", "Gençlik ve Değerler", "Allah İnsan İlişkisi", "İslam ve Bilim"]
             },
             "AYT": {
                 "Matematik": ["Karmaşık Sayılar", "Parabol", "Eşitsizlikler", "Trigonometri", "Logaritma", "Diziler", "Limit ve Süreklilik", "Türev ve Uygulamaları", "İntegral ve Uygulamaları", "Permütasyon-Kombinasyon-Olasılık"],
@@ -337,7 +345,11 @@
             "Kimya":     { icon: "fa-flask",      label: "🧪 Kimya",     colorClass: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
             "Biyoloji":  { icon: "fa-dna",        label: "🧬 Biyoloji",  colorClass: "bg-rose-500/15 text-rose-400 border-rose-500/30" },
             "Geometri":  { icon: "fa-shapes",     label: "📐 Geometri",  colorClass: "bg-amber-500/15 text-amber-400 border-amber-500/30" },
-            "Türkçe":    { icon: "fa-book-open",  label: "📚 Türkçe",    colorClass: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30" }
+            "Türkçe":    { icon: "fa-book-open",  label: "📚 Türkçe",    colorClass: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30" },
+            "Tarih":     { icon: "fa-scroll",     label: "📜 Tarih",     colorClass: "bg-orange-500/15 text-orange-400 border-orange-500/30" },
+            "Coğrafya":  { icon: "fa-earth-americas", label: "🌍 Coğrafya", colorClass: "bg-teal-500/15 text-teal-400 border-teal-500/30" },
+            "Felsefe":   { icon: "fa-brain",      label: "🧠 Felsefe",   colorClass: "bg-indigo-500/15 text-indigo-400 border-indigo-500/30" },
+            "Din Kültürü": { icon: "fa-mosque",   label: "🕌 Din Kültürü", colorClass: "bg-lime-500/15 text-lime-400 border-lime-500/30" }
         };
 
         const mufredatDataList = {
@@ -346,12 +358,16 @@
             "Geometri": dbMufredat.TYT.Geometri,
             "TYT/AYT Fizik": dbMufredat.AYT.Fizik,
             "TYT/AYT Kimya": dbMufredat.AYT.Kimya,
-            "TYT/AYT Biyoloji": dbMufredat.AYT.Biyoloji
+            "TYT/AYT Biyoloji": dbMufredat.AYT.Biyoloji,
+            "Tarih": dbMufredat.TYT.Tarih,
+            "Coğrafya": dbMufredat.TYT.Coğrafya,
+            "Felsefe": dbMufredat.TYT.Felsefe,
+            "Din Kültürü": dbMufredat.TYT["Din Kültürü"]
         };
 
         let currentWeekOffset = 0;
 
-        let userState = JSON.parse(localStorage.getItem('yksPublicState_v1')) || {
+        let userState = JSON.parse(localStorage.getItem('keremKomutaState_v8')) || {
             topics: {},
             kaynaklar: [],
             denemeler: [],
@@ -359,7 +375,7 @@
         };
 
         function saveState() {
-            localStorage.setItem('yksPublicState_v1', JSON.stringify(userState));
+            localStorage.setItem('keremKomutaState_v8', JSON.stringify(userState));
         }
 
         function switchTab(tabName) {
@@ -710,7 +726,7 @@
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userState));
             let downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "yks_study_yedek.json");
+            downloadAnchor.setAttribute("download", "kerem_komuta_yedek.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();

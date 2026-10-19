@@ -24,7 +24,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight text-white">Açık-Program</h1>
-                    <p class="text-xs text-slate-400">YKS Sayısal Ücretsiz Çalışma Takibi</p>
+                    <p class="text-xs text-slate-400">YKS Sayısal Ücretsiz Çalışma & Kaynak Takibi</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3 text-sm">
@@ -42,6 +42,9 @@
         <aside class="w-full md:w-64 bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col gap-2">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left px-4 py-3 rounded-lg font-medium flex items-center gap-3 transition bg-blue-600 text-white">
                 <i class="fa-solid fa-chart-line w-5"></i> Ana Panel
+            </button>
+            <button onclick="switchTab('kaynaklar')" id="nav-kaynaklar" class="w-full text-left px-4 py-3 rounded-lg font-medium flex items-center gap-3 transition text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-book-open w-5"></i> Kaynaklarım & İlerleme
             </button>
             <button onclick="switchTab('mufredat')" id="nav-mufredat" class="w-full text-left px-4 py-3 rounded-lg font-medium flex items-center gap-3 transition text-slate-300 hover:bg-slate-700">
                 <i class="fa-solid fa-book-bookmark w-5"></i> Müfredat & Konular
@@ -63,25 +66,38 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-slate-900 border border-slate-700 p-4 rounded-lg">
-                        <span class="text-xs text-slate-400">Tamamlanan Konular</span>
-                        <div class="text-2xl font-bold text-blue-400 mt-1" id="stat-mufredat-pct">%0</div>
+                        <span class="text-xs text-slate-400">Kaydedilen Kaynak Sayısı</span>
+                        <div class="text-2xl font-bold text-blue-400 mt-1" id="stat-kaynak-count">0</div>
                     </div>
                     <div class="bg-slate-900 border border-slate-700 p-4 rounded-lg">
                         <span class="text-xs text-slate-400">Son TYT Neti</span>
                         <div class="text-2xl font-bold text-emerald-400 mt-1" id="stat-last-net">0.0</div>
                     </div>
                     <div class="bg-slate-900 border border-slate-700 p-4 rounded-lg">
-                        <span class="text-xs text-slate-400">Tekrar Bekleyen Konular</span>
-                        <div class="text-2xl font-bold text-amber-400 mt-1" id="stat-repeat-count">0</div>
+                        <span class="text-xs text-slate-400">Biten Müfredat Oranı</span>
+                        <div class="text-2xl font-bold text-amber-400 mt-1" id="stat-mufredat-pct">%0</div>
                     </div>
                 </div>
 
                 <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
                     <h3 class="font-bold text-sm text-slate-300 mb-3"><i class="fa-solid fa-robot text-purple-400 mr-2"></i> Akıllı Koçluk Analizi</h3>
                     <p class="text-sm text-slate-300 leading-relaxed" id="koc-analiz-text">
-                        Henüz yeterli deneme verisi girilmedi. Denemeler sekmesinden Okulizyon netlerini aktararak analizi başlatabilirsin.
+                        Henüz yeterli deneme veya kaynak verisi girilmedi. Kaynaklar ve Denemeler sekmesinden veri ekleyerek analizi başlatabilirsin.
                     </p>
                 </div>
+            </div>
+
+            <!-- Kaynaklar Sekmesi -->
+            <div id="tab-kaynaklar" class="hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                    <h2 class="text-xl font-bold"><i class="fa-solid fa-book-open text-blue-400 mr-2"></i> Kaynak Soru Bankaları & Takip</h2>
+                    <button onclick="openAddKaynakModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-plus"></i> Kaynak Ekle
+                    </button>
+                </div>
+
+                <!-- Kaynak Listesi Grid -->
+                <div id="kaynaklar-container" class="grid grid-cols-1 gap-6"></div>
             </div>
 
             <!-- Müfredat Sekmesi -->
@@ -117,8 +133,33 @@
         </main>
     </div>
 
+    <!-- Kaynak Ekle Modal -->
+    <div id="add-kaynak-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md space-y-4">
+            <h3 class="text-lg font-bold text-white"><i class="fa-solid fa-book text-blue-400 mr-2"></i> Yeni Kaynak Kitap Ekle</h3>
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Ders Seçin</label>
+                <select id="modal-ders-select" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+                    <option value="TYT Matematik">TYT Matematik</option>
+                    <option value="AYT Matematik">AYT Matematik</option>
+                    <option value="Geometri">Geometri</option>
+                    <option value="TYT/AYT Fizik">TYT/AYT Fizik</option>
+                    <option value="TYT/AYT Kimya">TYT/AYT Kimya</option>
+                    <option value="TYT/AYT Biyoloji">TYT/AYT Biyoloji</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Kaynak Kitap Adı (örn. 3D Yayınları, Bilgi Sarmal)</label>
+                <input type="text" id="modal-kaynak-name" placeholder="Yayın Evi / Kitap Adı" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+            </div>
+            <div class="flex justify-end gap-3 pt-2">
+                <button onclick="closeAddKaynakModal()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm font-medium transition">İptal</button>
+                <button onclick="saveNewKaynak()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-sm font-medium text-white transition">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Müfredat Verisi
         const mufredatData = {
             "TYT Matematik": ["Temel Kavramlar", "Sayı Basamakları", "Bölme-Bölünebilme", "EBOB-EKOK", "Rasyonel Sayılar", "Basit Eşitsizlikler", "Mutlak Değer", "Üslü Sayılar", "Köklü Sayılar", "Çarpanlara Ayırma", "Oran-Orantı", "Problem Çeşitleri", "Mantık", "Kümeler", "Fonksiyonlar", "Polinomlar", "2. Dereceden Denklemler"],
             "AYT Matematik": ["Karmaşık Sayılar", "Parabol", "Eşitsizlikler", "Trigonometri", "Logaritma", "Diziler", "Limit ve Süreklilik", "Türev ve Uygulamaları", "İntegral ve Uygulamaları", "Permütasyon-Kombinasyon-Olasılık"],
@@ -130,6 +171,7 @@
 
         let userState = JSON.parse(localStorage.getItem('openStudyState')) || {
             topics: {},
+            kaynaklar: [],
             denemeler: [],
             yanlislar: []
         };
@@ -140,13 +182,112 @@
         }
 
         function switchTab(tabName) {
-            ['dashboard', 'mufredat', 'denemeler', 'yanlislar'].forEach(t => {
+            ['dashboard', 'kaynaklar', 'mufredat', 'denemeler', 'yanlislar'].forEach(t => {
                 document.getElementById('tab-' + t).classList.add('hidden');
                 document.getElementById('nav-' + t).classList.remove('bg-blue-600', 'text-white');
                 document.getElementById('nav-' + t).classList.add('text-slate-300');
             });
             document.getElementById('tab-' + tabName).classList.remove('hidden');
             document.getElementById('nav-' + tabName).classList.add('bg-blue-600', 'text-white');
+        }
+
+        function openAddKaynakModal() { document.getElementById('add-kaynak-modal').classList.remove('hidden'); }
+        function closeAddKaynakModal() { document.getElementById('add-kaynak-modal').classList.add('hidden'); }
+
+        function saveNewKaynak() {
+            const ders = document.getElementById('modal-ders-select').value;
+            const name = document.getElementById('modal-kaynak-name').value.trim();
+            if (!name) return alert('Lütfen kaynak adını girin!');
+            
+            const newKaynak = {
+                id: Date.now().toString(),
+                ders: ders,
+                name: name,
+                completedTopics: {}
+            };
+            userState.kaynaklar.push(newKaynak);
+            saveState();
+            renderKaynaklar();
+            closeAddKaynakModal();
+            document.getElementById('modal-kaynak-name').value = '';
+        }
+
+        function deleteKaynak(id) {
+            if (confirm('Bu kaynağı silmek istediğinize emin misiniz?')) {
+                userState.kaynaklar = userState.kaynaklar.filter(k => k.id !== id);
+                saveState();
+                renderKaynaklar();
+            }
+        }
+
+        function toggleKaynakTopic(kaynakId, konu) {
+            const kaynak = userState.kaynaklar.find(k => k.id === kaynakId);
+            if (kaynak) {
+                kaynak.completedTopics[konu] = !kaynak.completedTopics[konu];
+                saveState();
+                renderKaynaklar();
+            }
+        }
+
+        function renderKaynaklar() {
+            const container = document.getElementById('kaynaklar-container');
+            container.innerHTML = '';
+
+            if (!userState.kaynaklar || userState.kaynaklar.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-500 bg-slate-900/50 rounded-xl border border-slate-700/50">
+                    <i class="fa-solid fa-book-open text-4xl mb-3 opacity-50"></i>
+                    <p>Henüz kayıtlı bir soru bankası/kaynak yok.</p>
+                    <p class="text-xs text-slate-600 mt-1">"Kaynak Ekle" butonunu kullanarak soru bankalarını ekleyebilirsin.</p>
+                </div>`;
+                return;
+            }
+
+            userState.kaynaklar.forEach(kaynak => {
+                const konulari = mufredatData[kaynak.ders] || [];
+                let doneCount = 0;
+                konulari.forEach(k => { if (kaynak.completedTopics && kaynak.completedTopics[k]) doneCount++; });
+                const pct = konulari.length > 0 ? Math.round((doneCount / konulari.length) * 100) : 0;
+
+                let topicsHtml = konulari.map(konu => {
+                    const isDone = kaynak.completedTopics && kaynak.completedTopics[konu];
+                    return `
+                        <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer hover:text-white bg-slate-800 p-2 rounded border border-slate-700/60">
+                            <input type="checkbox" onchange="toggleKaynakTopic('${kaynak.id}', '${konu}')" ${isDone ? 'checked' : ''} class="rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-0">
+                            <span class="${isDone ? 'line-through text-slate-500' : ''}">${konu}</span>
+                        </label>
+                    `;
+                }).join('');
+
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 space-y-4">
+                        <div class="flex justify-between items-start border-b border-slate-800 pb-3">
+                            <div>
+                                <span class="text-xs px-2 py-0.5 rounded bg-blue-900/50 text-blue-300 border border-blue-700/50">${kaynak.ders}</span>
+                                <h3 class="text-lg font-bold text-white mt-1">${kaynak.name}</h3>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-400">İlerleme</span>
+                                    <div class="text-sm font-bold text-emerald-400">%${pct} (${doneCount}/${konulari.length})</div>
+                                </div>
+                                <button onclick="deleteKaynak('${kaynak.id}')" class="text-slate-500 hover:text-red-400 p-2 transition">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full transition-all duration-300" style="width: ${pct}%"></div>
+                        </div>
+
+                        <!-- Konu Listesi Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 pt-2">
+                            ${topicsHtml}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function renderMufredat() {
@@ -181,7 +322,6 @@
 
         function parseOkulizyonText() {
             const txt = document.getElementById('okulizyon-input').value;
-            // Basit Regex Ayrıştırıcı
             const netMatch = txt.match(/(\d+[\.,]?\d*)\s*net/i) || txt.match(/Toplam:\s*\d+\s*\d+\s*(\d+[\.,]?\d*)/i);
             if (netMatch) {
                 let val = parseFloat(netMatch[1].replace(',', '.'));
@@ -195,6 +335,8 @@
         }
 
         function updateStats() {
+            document.getElementById('stat-kaynak-count').innerText = userState.kaynaklar ? userState.kaynaklar.length : 0;
+            
             let total = 0, done = 0;
             for (let ders in mufredatData) {
                 mufredatData[ders].forEach(k => {
@@ -205,7 +347,7 @@
             let pct = total > 0 ? Math.round((done / total) * 100) : 0;
             document.getElementById('stat-mufredat-pct').innerText = `%${pct}`;
             
-            if (userState.denemeler.length > 0) {
+            if (userState.denemeler && userState.denemeler.length > 0) {
                 let last = userState.denemeler[userState.denemeler.length - 1].net;
                 document.getElementById('stat-last-net').innerText = last;
             }
@@ -242,6 +384,7 @@
         }
 
         window.onload = function() {
+            renderKaynaklar();
             renderMufredat();
             updateStats();
             initChart();

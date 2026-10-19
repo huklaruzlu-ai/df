@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Açık-Program | YKS Sayısal Takip Platformu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1f2937; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white font-bold text-xl">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-white">Açık-Program</h1>
+                    <p class="text-xs text-slate-400">YKS Sayısal Ücretsiz Çalışma Takibi</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 text-sm">
+                <button onclick="exportData()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-xs flex items-center gap-1 transition">
+                    <i class="fa-solid fa-download"></i> Yedekle
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana Konteyner -->
+    <div class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 flex flex-col md:flex-row gap-6">
+        
+        <!-- Sol Navigasyon -->
+        <aside class="w-full md:w-64 bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col gap-2">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left px-4 py-3 rounded-lg font-medium flex items-center gap-3 transition bg-blue-600 text-white">
+                <i class="fa-solid fa-chart-line w-5"></i> Ana Panel
+            </button>
+            <button onclick="switchTab('mufredat')" id="nav-mufredat" class="w-full text-left px-4 py-3 rounded-lg font-medium flex items-center gap-3 transition text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-book-bookmark w-5"></i> Müfredat & Konular
+            </button>
+            <button onclick="switchTab('denemeler')" id="nav-denemeler" class="w-full text-left px-4 py-3 rounded-lg font-medium flex items-center gap-3 transition text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-pen-ruler w-5"></i> Denemeler & Okulizyon
+            </button>
+            <button onclick="switchTab('yanlislar')" id="nav-yanlislar" class="w-full text-left px-4 py-3 rounded-lg font-medium flex items-center gap-3 transition text-slate-300 hover:bg-slate-700">
+                <i class="fa-solid fa-triangle-exclamation w-5"></i> Yanlış Kutu (Aralıklı Tekrar)
+            </button>
+        </aside>
+
+        <!-- Sağ İçerik Alanı -->
+        <main class="flex-1 bg-slate-800 border border-slate-700 rounded-xl p-6">
+            
+            <!-- Dashboard Sekmesi -->
+            <div id="tab-dashboard" class="space-y-6">
+                <h2 class="text-xl font-bold border-b border-slate-700 pb-3"><i class="fa-solid fa-gauge-high text-blue-400 mr-2"></i> Genel Durum & İlerleme</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-lg">
+                        <span class="text-xs text-slate-400">Tamamlanan Konular</span>
+                        <div class="text-2xl font-bold text-blue-400 mt-1" id="stat-mufredat-pct">%0</div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-lg">
+                        <span class="text-xs text-slate-400">Son TYT Neti</span>
+                        <div class="text-2xl font-bold text-emerald-400 mt-1" id="stat-last-net">0.0</div>
+                    </div>
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-lg">
+                        <span class="text-xs text-slate-400">Tekrar Bekleyen Konular</span>
+                        <div class="text-2xl font-bold text-amber-400 mt-1" id="stat-repeat-count">0</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                    <h3 class="font-bold text-sm text-slate-300 mb-3"><i class="fa-solid fa-robot text-purple-400 mr-2"></i> Akıllı Koçluk Analizi</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed" id="koc-analiz-text">
+                        Henüz yeterli deneme verisi girilmedi. Denemeler sekmesinden Okulizyon netlerini aktararak analizi başlatabilirsin.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Müfredat Sekmesi -->
+            <div id="tab-mufredat" class="hidden space-y-4">
+                <h2 class="text-xl font-bold border-b border-slate-700 pb-3"><i class="fa-solid fa-list-check text-blue-400 mr-2"></i> YKS Sayısal Müfredat Takibi</h2>
+                <div id="mufredat-container" class="space-y-4"></div>
+            </div>
+
+            <!-- Denemeler Sekmesi -->
+            <div id="tab-denemeler" class="hidden space-y-6">
+                <h2 class="text-xl font-bold border-b border-slate-700 pb-3"><i class="fa-solid fa-chart-line text-blue-400 mr-2"></i> Deneme Analizi</h2>
+                
+                <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-3">
+                    <h3 class="font-bold text-sm text-blue-400"><i class="fa-solid fa-paste mr-2"></i> Okulizyon'dan Hızlı İçe Aktar</h3>
+                    <textarea id="okulizyon-input" rows="3" placeholder="Okulizyon sonuç ekranındaki metni buraya yapıştır..." class="w-full bg-slate-800 border border-slate-700 rounded p-3 text-sm text-slate-200 focus:outline-none focus:border-blue-500"></textarea>
+                    <button onclick="parseOkulizyonText()" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded text-sm transition">
+                        Verileri Çözümle ve Ekle
+                    </button>
+                </div>
+
+                <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                    <canvas id="netChart" height="120"></canvas>
+                </div>
+            </div>
+
+            <!-- Yanlışlar Sekmesi -->
+            <div id="tab-yanlislar" class="hidden space-y-4">
+                <h2 class="text-xl font-bold border-b border-slate-700 pb-3"><i class="fa-solid fa-box-archive text-blue-400 mr-2"></i> Yanlış Soru Kutusu</h2>
+                <p class="text-sm text-slate-400">Zorlandığın veya yanlış yaptığın soruları aralıklı tekrar için buraya not alabilirsin.</p>
+                <div id="yanlislar-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Müfredat Verisi
+        const mufredatData = {
+            "TYT Matematik": ["Temel Kavramlar", "Sayı Basamakları", "Bölme-Bölünebilme", "EBOB-EKOK", "Rasyonel Sayılar", "Basit Eşitsizlikler", "Mutlak Değer", "Üslü Sayılar", "Köklü Sayılar", "Çarpanlara Ayırma", "Oran-Orantı", "Problem Çeşitleri", "Mantık", "Kümeler", "Fonksiyonlar", "Polinomlar", "2. Dereceden Denklemler"],
+            "AYT Matematik": ["Karmaşık Sayılar", "Parabol", "Eşitsizlikler", "Trigonometri", "Logaritma", "Diziler", "Limit ve Süreklilik", "Türev ve Uygulamaları", "İntegral ve Uygulamaları", "Permütasyon-Kombinasyon-Olasılık"],
+            "Geometri": ["Doğruda ve Üçgende Açılar", "Özel Üçgenler", "Üçgende Alan ve Benzerlik", "Çokgenler ve Dörtgenler", "Çember ve Daire", "Analitik Geometri", "Katı Cisimler"],
+            "TYT/AYT Fizik": ["Fizik Bilimine Giriş", "Madde ve Özellikleri", "Hareket ve Kuvvet", "İş, Güç ve Enerji", "Isı ve Sıcaklık", "Elektrostatik ve Elektrik", "Optik", "Dalgalar", "Vektörler ve Tork", "Atışlar", "Çembersel Hareket", "Modern Fizik"],
+            "TYT/AYT Kimya": ["Kimya Bilimi", "Atom ve Periyodik Sistem", "Kimyasal Türler Arası Etkileşimler", "Mol Kavramı ve Hesaplamalar", "Asitler, Bazlar, Tuzlar", "Gazlar", "Sıvı Çözeltiler", "Kimyasal Tepkimelerde Enerji ve Hız", "Kimyasal Denge", "Organik Kimya"],
+            "TYT/AYT Biyoloji": ["Yaşam Bilimi Biyoloji", "Hücre ve Bölünmeler", "Kalıtım", "Ekosistem", "İnsan Fizyolojisi (Sistemler)", "Gensoru ve Bitki Biyolojisi", "Canlılarda Enerji Dönüşümleri"]
+        };
+
+        let userState = JSON.parse(localStorage.getItem('openStudyState')) || {
+            topics: {},
+            denemeler: [],
+            yanlislar: []
+        };
+
+        function saveState() {
+            localStorage.setItem('openStudyState', JSON.stringify(userState));
+            updateStats();
+        }
+
+        function switchTab(tabName) {
+            ['dashboard', 'mufredat', 'denemeler', 'yanlislar'].forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                document.getElementById('nav-' + t).classList.remove('bg-blue-600', 'text-white');
+                document.getElementById('nav-' + t).classList.add('text-slate-300');
+            });
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.getElementById('nav-' + tabName).classList.add('bg-blue-600', 'text-white');
+        }
+
+        function renderMufredat() {
+            const container = document.getElementById('mufredat-container');
+            container.innerHTML = '';
+            
+            for (let ders in mufredatData) {
+                let dersHtml = `<div class="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                    <h3 class="font-bold text-blue-400 mb-3">${ders}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">`;
+                
+                mufredatData[ders].forEach(konu => {
+                    let key = ders + "_" + konu;
+                    let checked = userState.topics[key] ? 'checked' : '';
+                    dersHtml += `
+                        <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer hover:text-white">
+                            <input type="checkbox" onchange="toggleTopic('${key}')" ${checked} class="rounded bg-slate-800 border-slate-700 text-blue-600 focus:ring-0">
+                            <span>${konu}</span>
+                        </label>
+                    `;
+                });
+                
+                dersHtml += `</div></div>`;
+                container.innerHTML += dersHtml;
+            }
+        }
+
+        function toggleTopic(key) {
+            userState.topics[key] = !userState.topics[key];
+            saveState();
+        }
+
+        function parseOkulizyonText() {
+            const txt = document.getElementById('okulizyon-input').value;
+            // Basit Regex Ayrıştırıcı
+            const netMatch = txt.match(/(\d+[\.,]?\d*)\s*net/i) || txt.match(/Toplam:\s*\d+\s*\d+\s*(\d+[\.,]?\d*)/i);
+            if (netMatch) {
+                let val = parseFloat(netMatch[1].replace(',', '.'));
+                userState.denemeler.push({ title: 'Okulizyon Denemesi', net: val, date: new Date().toLocaleDateString('tr-TR') });
+                saveState();
+                initChart();
+                alert('Deneme başarıyla eklendi: Net ' + val);
+            } else {
+                alert('Net değeri okunamadı. Lütfen metni kontrol edin.');
+            }
+        }
+
+        function updateStats() {
+            let total = 0, done = 0;
+            for (let ders in mufredatData) {
+                mufredatData[ders].forEach(k => {
+                    total++;
+                    if (userState.topics[ders + "_" + k]) done++;
+                });
+            }
+            let pct = total > 0 ? Math.round((done / total) * 100) : 0;
+            document.getElementById('stat-mufredat-pct').innerText = `%${pct}`;
+            
+            if (userState.denemeler.length > 0) {
+                let last = userState.denemeler[userState.denemeler.length - 1].net;
+                document.getElementById('stat-last-net').innerText = last;
+            }
+        }
+
+        function exportData() {
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userState));
+            let downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "yks_open_study_yedek.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        let chart;
+        function initChart() {
+            const ctx = document.getElementById('netChart').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: userState.denemeler.map((d, i) => d.date || `Deneme ${i+1}`),
+                    datasets: [{
+                        label: 'TYT Net Değişimi',
+                        data: userState.denemeler.map(d => d.net),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { labels: { color: '#cbd5e1' } } } }
+            });
+        }
+
+        window.onload = function() {
+            renderMufredat();
+            updateStats();
+            initChart();
+        };
+    </script>
+</body>
+</html>
